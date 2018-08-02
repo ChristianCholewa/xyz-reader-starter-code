@@ -5,10 +5,15 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ShareCompat;
+import android.support.v7.graphics.Palette;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
@@ -17,7 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -52,7 +59,6 @@ public class ArticleDetailFragment extends Fragment implements
     private View mPhotoContainerView;
     private ImageView mPhotoView;
     private int mScrollY;
-    private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
 
     /**
@@ -78,7 +84,6 @@ public class ArticleDetailFragment extends Fragment implements
             mItemId = getArguments().getLong(ARG_ITEM_ID);
         }
 
-        mIsCard = getResources().getBoolean(R.bool.detail_is_card);
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
                 R.dimen.detail_card_top_margin);
         setHasOptionsMenu(true);
@@ -103,9 +108,9 @@ public class ArticleDetailFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
-        //mRootView.setVisibility(View.GONE);
+        mRootView.setVisibility(View.INVISIBLE);
 
-        mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
+        mPhotoView = mRootView.findViewById(R.id.photo);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
@@ -124,31 +129,18 @@ public class ArticleDetailFragment extends Fragment implements
         return mRootView;
     }
 
-    static float progress(float v, float min, float max) {
-        return constrain((v - min) / (max - min), 0, 1);
-    }
-
-    static float constrain(float val, float min, float max) {
-        if (val < min) {
-            return min;
-        } else if (val > max) {
-            return max;
-        } else {
-            return val;
-        }
-    }
-
     private void bindViews() {
         if (mRootView == null) {
             return;
         }
 
-        TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
-        TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
-        TextView authorView = (TextView) mRootView.findViewById(R.id.article_author);
+        final LinearLayout metaBar = mRootView.findViewById(R.id.meta_bar);
+        final TextView titleView = mRootView.findViewById(R.id.article_title);
+        final TextView bylineView = mRootView.findViewById(R.id.article_byline);
+        final TextView authorView = mRootView.findViewById(R.id.article_author);
 
         //bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+        TextView bodyView = mRootView.findViewById(R.id.article_body);
 
         bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
@@ -180,6 +172,23 @@ public class ArticleDetailFragment extends Fragment implements
 
             Picasso.with(getActivity()).load(mCursor.getString(ArticleLoader.Query.THUMB_URL)).into(mPhotoView);
 
+            Bitmap bitmap = ((BitmapDrawable)mPhotoView.getDrawable()).getBitmap();
+            Palette.from(bitmap)
+                .generate(new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(@NonNull Palette palette) {
+                        Palette.Swatch textSwatch = palette.getDominantSwatch();
+                        if (textSwatch == null) {
+                            Toast.makeText(getActivity(), "Null swatch :(", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        metaBar.setBackgroundColor(textSwatch.getRgb());
+                        titleView.setTextColor(textSwatch.getTitleTextColor());
+                        bylineView.setTextColor(textSwatch.getBodyTextColor());
+                        authorView.setTextColor(textSwatch.getBodyTextColor());
+                    }
+                });
         }
     }
 

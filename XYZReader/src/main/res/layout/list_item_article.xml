@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:background="@color/photo_placeholder" />
+            android:background="@color/photo_placeholder"
+            android:contentDescription="@string/welcome_xyz_reader" />
 
         <TextView
             android:id="@+id/article_title"
