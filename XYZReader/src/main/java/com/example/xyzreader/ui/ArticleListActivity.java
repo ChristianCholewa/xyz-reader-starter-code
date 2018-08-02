@@ -32,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.example.xyzreader.data.Tools.parsePublishedDate;
+
 /**
  * An activity representing a list of Articles. This activity has different presentations for
  * handset and tablet-size devices. On handsets, the activity presents a list of items, which when
@@ -47,7 +49,6 @@ public class ArticleListActivity extends AppCompatActivity implements
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
@@ -154,37 +155,20 @@ public class ArticleListActivity extends AppCompatActivity implements
             return vh;
         }
 
-        private Date parsePublishedDate() {
-            try {
-                String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
-                return dateFormat.parse(date);
-            } catch (ParseException ex) {
-                Log.e(TAG, ex.getMessage());
-                Log.i(TAG, "passing today's date");
-                return new Date();
-            }
-        }
-
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             holder.titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
-            Date publishedDate = parsePublishedDate();
-            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
 
-                holder.subtitleView.setText(Html.fromHtml(
-                        DateUtils.getRelativeTimeSpanString(
-                                publishedDate.getTime(),
-                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL).toString()
-                                + "<br/>" + " by "
-                                + mCursor.getString(ArticleLoader.Query.AUTHOR)));
-            } else {
-                holder.subtitleView.setText(Html.fromHtml(
-                        outputFormat.format(publishedDate)
-                        + "<br/>" + " by "
-                        + mCursor.getString(ArticleLoader.Query.AUTHOR)));
-            }
+            String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
+            String publishedDate = parsePublishedDate(date);
+
+            String author = mCursor.getString(ArticleLoader.Query.AUTHOR);
+            Log.i(TAG, String.format("Author: %s", author));
+
+            // TODO
+            String bylineString = String.format("%s, %s", publishedDate, author);
+            holder.subtitleView.setText(bylineString);
 
             Picasso.with(getApplicationContext()).load(mCursor.getString(ArticleLoader.Query.THUMB_URL)).into(holder.thumbnailView);
         }
