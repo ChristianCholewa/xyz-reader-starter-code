@@ -28,9 +28,6 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
     private Cursor mCursor;
     private long mStartId;
 
-    private long mSelectedItemId;
-    private int mTopInset;
-
     private ViewPager mPager;
     private MyPagerAdapter mPagerAdapter;
 
@@ -64,14 +61,12 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
                 if (mCursor != null) {
                     mCursor.moveToPosition(position);
                 }
-                mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
             }
         });
 
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
                 mStartId = ItemsContract.Items.getItemId(getIntent().getData());
-                mSelectedItemId = mStartId;
             }
         }
     }
@@ -109,7 +104,7 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
-        public MyPagerAdapter(FragmentManager fm) {
+        MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
