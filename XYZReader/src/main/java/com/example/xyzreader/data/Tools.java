@@ -1,6 +1,5 @@
 package com.example.xyzreader.data;
 
-import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
 

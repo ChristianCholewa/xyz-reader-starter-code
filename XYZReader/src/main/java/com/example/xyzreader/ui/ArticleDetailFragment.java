@@ -9,31 +9,22 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
-import android.text.Html;
-import android.text.format.DateUtils;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.squareup.picasso.Picasso;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import static com.example.xyzreader.data.Tools.parsePublishedDate;
 
@@ -134,7 +125,7 @@ public class ArticleDetailFragment extends Fragment implements
             return;
         }
 
-        final LinearLayout metaBar = mRootView.findViewById(R.id.meta_bar);
+        final ConstraintLayout metaBar = mRootView.findViewById(R.id.meta_bar);
         final TextView titleView = mRootView.findViewById(R.id.article_title);
         final TextView bylineView = mRootView.findViewById(R.id.article_byline);
         final TextView authorView = mRootView.findViewById(R.id.article_author);
