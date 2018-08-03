@@ -32,9 +32,9 @@
                 style="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:paddingRight="16dp"
+                android:paddingLeft="@dimen/list_standard_padding"
+                android:paddingTop="@dimen/list_standard_padding"
+                android:paddingRight="@dimen/list_standard_padding"
                 android:paddingBottom="4dp"
                 android:ellipsize="end"
                 android:maxLines="4" />
@@ -44,9 +44,9 @@
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="16dp"
+                android:paddingLeft="@dimen/list_standard_padding"
+                android:paddingRight="@dimen/list_standard_padding"
+                android:paddingBottom="@dimen/list_standard_padding"
                 android:maxLines="2"
                 android:ellipsize="end" />
         </LinearLayout>
